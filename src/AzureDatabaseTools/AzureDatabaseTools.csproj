@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Package">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>database</ToolCommandName>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
+
+    <PackageId>AzureDatabaseExport</PackageId>
+    <Authors>Tiago Rios (@tiagojsrios)</Authors>
+    <Version>0.1.0-beta1</Version>
+
+    <Description>
+      Utility package that allows you to interact with SQL Server databases hosted on Azure
+    </Description>
+    <PackageReleaseNotes>
+      Implemented database export command that allows consumers to export a database in .bacpac format
+    </PackageReleaseNotes>
+
+    <PackageProjectUrl>https://github.com/tiagojsrios/ServiceCollectionGenerators</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tiagojsrios/ServiceCollectionGenerators</RepositoryUrl>
+    <PackageTags>.net sqlserver database localdb</PackageTags>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConsoleAppFramework" Version="4.2.4" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="161.6374.0" />
+  </ItemGroup>
+
+</Project>
