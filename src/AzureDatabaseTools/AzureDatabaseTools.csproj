@@ -6,7 +6,7 @@
     <ToolCommandName>database</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
 
-    <PackageId>AzureDatabaseExport</PackageId>
+    <PackageId>AzureDatabaseTools</PackageId>
     <Authors>Tiago Rios (@tiagojsrios)</Authors>
     <Version>0.1.0-beta1</Version>
 

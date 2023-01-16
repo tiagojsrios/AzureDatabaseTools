@@ -13,15 +13,22 @@ internal static class ConfigurationBuilderHelper
     internal static IConfigurationBuilder AddJsonFileByEnvironment(this IConfigurationBuilder configurationBuilder,
         string environment)
     {
-        return configurationBuilder.AddJsonFile($"appsettings.{environment}.json", optional: false);
+        string filePath = $"{Directory.GetCurrentDirectory()}\\appsettings.{environment}.json";
+        Console.WriteLine(filePath);
+
+        return configurationBuilder.AddJsonFile(filePath, optional: false);
     }
 
     internal static SqlConnectionStringBuilder GetDatabaseConnectionString(this IConfigurationRoot configurationRoot,
         string sectionName)
     {
+        Console.WriteLine($"SectionName: {sectionName}");
+        string connectionStringValue = configurationRoot.GetValue<string>(sectionName);
+        Console.WriteLine($"{nameof(connectionStringValue)}: {connectionStringValue}");
+
         SqlConnectionStringBuilder databaseConnectionBuilder = new()
         {
-            ConnectionString = configurationRoot.GetValue<string>(sectionName)
+            ConnectionString = connectionStringValue
         };
 
         return databaseConnectionBuilder;

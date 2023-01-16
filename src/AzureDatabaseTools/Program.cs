@@ -12,6 +12,6 @@ builder.ConfigureServices(services =>
 
 ConsoleApp application = builder.Build();
 
-application.AddSubCommands<DatabaseCommand>();
+application.AddCommands<ExportCommand>();
 
 await application.RunAsync();

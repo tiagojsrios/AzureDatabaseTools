@@ -2,17 +2,15 @@
 
 namespace AzureDatabaseTools.Commands;
 
-[Command(commandName: "database")]
-public class DatabaseCommand : ConsoleAppBase
+internal class ExportCommand : ConsoleAppBase
 {
     private readonly IDatabaseOperationService _databaseOperationService;
 
-    public DatabaseCommand(IDatabaseOperationService databaseExportService)
+    public ExportCommand(IDatabaseOperationService databaseExportService)
     {
         _databaseOperationService = databaseExportService;
     }
 
-    [Command(commandName: "export")]
     public void Export(
         [Option(shortName: "s", description: "description", DefaultValue = "Test")] string sourceEnvironmentName = "Test",
         [Option(shortName: "ss", description: "", DefaultValue = "ConnectionStrings:Default")] string sourceSection = "ConnectionStrings:Default"

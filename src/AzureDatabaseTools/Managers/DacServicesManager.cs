@@ -7,13 +7,14 @@ public static class DacServicesManager
 {
     public static void ExportDatabase(DbConnectionStringBuilder connectionString, string databaseName)
     {
+        Console.WriteLine(connectionString.ToString());
         DacServices dac = new(connectionString.ToString());
 
         dac.ProgressChanged += (o, e) =>
         {
             Console.WriteLine(e.Message);
         };
-
-        dac.ExportBacpac(packageFileName: $"../../../{databaseName}.bacpac", databaseName);
+        
+        dac.ExportBacpac(packageFileName: $"./{databaseName}.bacpac", databaseName);
     }
 }
