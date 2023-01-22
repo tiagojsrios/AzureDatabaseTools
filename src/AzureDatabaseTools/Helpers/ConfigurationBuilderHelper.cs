@@ -5,11 +5,6 @@ namespace AzureDatabaseTools.Helpers;
 
 internal static class ConfigurationBuilderHelper
 {
-    internal static IConfigurationBuilder Create()
-    {
-        return new ConfigurationBuilder();
-    }
-
     internal static IConfigurationBuilder AddJsonFileByEnvironment(this IConfigurationBuilder configurationBuilder,
         string environment)
     {

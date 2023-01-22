@@ -1,18 +1,24 @@
-﻿using Microsoft.SqlServer.Dac;
-using System.Data.Common;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.SqlServer.Dac;
 
 namespace AzureDatabaseTools.Managers;
 
-public static class DacServicesManager
+public class DacServicesManager
 {
-    public static void ExportDatabase(DbConnectionStringBuilder connectionString, string databaseName)
+    private readonly ILogger<DacServicesManager> _logger;
+
+    public DacServicesManager(ILogger<DacServicesManager> logger)
     {
-        Console.WriteLine(connectionString.ToString());
-        DacServices dac = new(connectionString.ToString());
+        _logger = logger;
+    }
+
+    public void ExportDatabase(string connectionString, string databaseName)
+    {
+        DacServices dac = new(connectionString);
 
         dac.ProgressChanged += (o, e) =>
         {
-            Console.WriteLine(e.Message);
+            _logger.LogDebug(e.Message);
         };
         
         dac.ExportBacpac(packageFileName: $"./{databaseName}.bacpac", databaseName);

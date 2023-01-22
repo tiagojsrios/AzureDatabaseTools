@@ -32,7 +32,9 @@
 
   <ItemGroup>
     <PackageReference Include="ConsoleAppFramework" Version="4.2.4" />
-    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="161.6374.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx" Version="160.6296.0" />
   </ItemGroup>
 
 </Project>

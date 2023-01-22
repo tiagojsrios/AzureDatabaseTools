@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AzureDatabaseTools": {
+      "commandName": "Project",
+      "commandLineArgs": "--verbosity Debug"
+    }
+  }
+}
