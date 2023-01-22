@@ -30,14 +30,14 @@ public class SqlServerOperationService : IDatabaseOperationService
     /// <exception cref="InvalidOperationException">
     ///     Exception thrown when the connection string does not have the property Database defined.
     /// </exception>
-    public void Export(string environmentName, string configurationSection)
+    public void Export(string? environmentName, string configurationSection)
     {
         DbConnectionStringBuilder databaseConnectionString = new ConfigurationBuilder()
-            .AddJsonFileByEnvironment(environmentName)
+            .AddJsonFileByEnvironment(environmentName, _logger)
             .Build()
-            .GetDatabaseConnectionString(configurationSection);
+            .GetDatabaseConnectionString(configurationSection, _logger);
 
-        if (databaseConnectionString["Database"] is not string sourceDatabaseName)
+        if (databaseConnectionString["Database"] is not string databaseName)
         {
             throw new InvalidOperationException("Could not find database property in the connection string");
         }
@@ -45,9 +45,9 @@ public class SqlServerOperationService : IDatabaseOperationService
         try
         {
             string connectionString = databaseConnectionString.ToString();
-            _logger.LogInformation(message: "Found the following connection string {ConnectionString}", connectionString);
+            _logger.LogDebug(message: "Found the following connection string {ConnectionString}", connectionString);
 
-            _dacServicesManager.ExportDatabase(connectionString, sourceDatabaseName);
+            _dacServicesManager.ExportDatabase(connectionString, databaseName);
         }
         catch (Exception e)
         {

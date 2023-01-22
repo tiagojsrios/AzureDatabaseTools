@@ -18,9 +18,13 @@ public class DacServicesManager
 
         dac.ProgressChanged += (o, e) =>
         {
-            _logger.LogDebug(e.Message);
+            _logger.LogDebug(message: "{OperationId} | {Status} | {Message}", 
+                e.OperationId, e.Status.ToString(), e.Message);
         };
-        
-        dac.ExportBacpac(packageFileName: $"./{databaseName}.bacpac", databaseName);
+
+        string bacpacFileLocation = $"{Directory.GetCurrentDirectory()}\\{databaseName}.bacpac";
+        _logger.LogInformation("Extracting database to the following file {FileLocation}", bacpacFileLocation);
+
+        dac.ExportBacpac(packageFileName: bacpacFileLocation, databaseName);
     }
 }

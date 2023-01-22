@@ -1,25 +1,36 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AzureDatabaseTools.Helpers;
 
 internal static class ConfigurationBuilderHelper
 {
     internal static IConfigurationBuilder AddJsonFileByEnvironment(this IConfigurationBuilder configurationBuilder,
-        string environment)
+        string? environment, ILogger logger)
     {
-        string filePath = $"{Directory.GetCurrentDirectory()}\\appsettings.{environment}.json";
-        Console.WriteLine(filePath);
+        if (environment is not null)
+        {
+            environment = $".{environment}";
+        }
 
-        return configurationBuilder.AddJsonFile(filePath, optional: false);
+        string filePath = $"{Directory.GetCurrentDirectory()}\\appsettings{environment}.json";
+
+        configurationBuilder = configurationBuilder.AddJsonFile(filePath, optional: false);
+        logger.LogDebug(message: "Added {FilePath} file to the configuration builder", filePath);
+
+        return configurationBuilder;
     }
 
     internal static SqlConnectionStringBuilder GetDatabaseConnectionString(this IConfigurationRoot configurationRoot,
-        string sectionName)
+        string sectionName, ILogger logger)
     {
-        Console.WriteLine($"SectionName: {sectionName}");
-        string connectionStringValue = configurationRoot.GetValue<string>(sectionName);
-        Console.WriteLine($"{nameof(connectionStringValue)}: {connectionStringValue}");
+        string? connectionStringValue = configurationRoot.GetValue<string>(sectionName);
+
+        if (string.IsNullOrEmpty(connectionStringValue))
+        {
+            throw new InvalidOperationException("Connection string cannot be null, neither empty");
+        }
 
         SqlConnectionStringBuilder databaseConnectionBuilder = new()
         {

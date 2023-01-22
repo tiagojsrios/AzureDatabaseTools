@@ -13,9 +13,12 @@ ConsoleAppBuilder builder = ConsoleApp
     .CreateBuilder(args)
     .ConfigureLogging((_, logging) =>
     {
-        logging
-            .AddConsole()
-            .SetMinimumLevel(verbosity.ConvertStringToLogLevel());
+        logging.ClearProviders();
+        logging.AddSimpleConsole(x =>
+        {
+            x.IncludeScopes = true;
+        });
+        logging.SetMinimumLevel(verbosity.ConvertStringToLogLevel());
     });
 
 builder.ConfigureServices(services =>
