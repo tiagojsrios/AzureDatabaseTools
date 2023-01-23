@@ -1,9 +1,9 @@
+using System.Data.Common;
 using AzureDatabaseTools.Helpers;
 using AzureDatabaseTools.Managers;
 using AzureDatabaseTools.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Data.Common;
 
 namespace AzureDatabaseTools.Services;
 
@@ -21,7 +21,7 @@ public class SqlServerOperationService : IDatabaseOperationService
     /// <summary>
     ///     Reads the connection string from the appsettings file and exports a Sql Server database into a .bacpac file.
     /// </summary>
-    /// <param name="environmentName">
+    /// <param name="configurationRoot">
     ///     Environment name that should be used to get the database connection string from the appsettings file.
     /// </param>
     /// <param name="configurationSection">
@@ -30,28 +30,36 @@ public class SqlServerOperationService : IDatabaseOperationService
     /// <exception cref="InvalidOperationException">
     ///     Exception thrown when the connection string does not have the property Database defined.
     /// </exception>
-    public void Export(string? environmentName, string configurationSection)
+    public void Export(IConfigurationRoot configurationRoot, string configurationSection)
     {
-        DbConnectionStringBuilder databaseConnectionString = new ConfigurationBuilder()
-            .AddJsonFileByEnvironment(environmentName, _logger)
-            .Build()
-            .GetDatabaseConnectionString(configurationSection, _logger);
+        DbConnectionStringBuilder databaseConnectionString = configurationRoot.GetDatabaseConnectionString(configurationSection, _logger);
 
         if (databaseConnectionString["Database"] is not string databaseName)
+        {
+            throw new InvalidOperationException(message: "Could not find database property in the connection string");
+        }
+
+        string connectionString = databaseConnectionString.ToString();
+        _logger.LogDebug(message: "Found the following connection string {ConnectionString}", connectionString);
+
+        _dacServicesManager.ExportDatabase(connectionString, databaseName);
+    }
+
+    public void Clone(IConfigurationRoot configurationRoot, IConfigurationRoot developmentConfigurationRoot, string configurationSection)
+    {
+        Export(configurationRoot, configurationSection);
+
+        DbConnectionStringBuilder developmentDatabaseConnectionString = developmentConfigurationRoot.GetDatabaseConnectionString(configurationSection, _logger);
+
+        if (developmentDatabaseConnectionString["Database"] is not string developmentDatabaseName)
         {
             throw new InvalidOperationException("Could not find database property in the connection string");
         }
 
-        try
-        {
-            string connectionString = databaseConnectionString.ToString();
-            _logger.LogDebug(message: "Found the following connection string {ConnectionString}", connectionString);
+        string developmentConnectionString = developmentDatabaseConnectionString.ToString();
 
-            _dacServicesManager.ExportDatabase(connectionString, databaseName);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "An error has occurred while exporting the database");
-        }
+        DbConnectionStringBuilder databaseConnectionString = configurationRoot.GetDatabaseConnectionString(configurationSection, _logger);
+
+        _dacServicesManager.ImportDatabase(developmentConnectionString, databaseName: databaseConnectionString["Database"].ToString()!, developmentDatabaseName);
     }
 }
