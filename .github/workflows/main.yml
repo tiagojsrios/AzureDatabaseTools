@@ -1,0 +1,29 @@
+name: publish AzureDatabaseTools to NuGet registry
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/AzureDatabaseTools/**'
+jobs:
+  publish:
+    name: Build AzureDatabaseTools and Publish on nuget.org
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 7.0.x
+      
+      - name: Publish NuGet
+        uses: brandedoutcast/publish-nuget@v2.5.5
+        with:
+          PROJECT_FILE_PATH: src/AzureDatabaseTools/AzureDatabaseTools.csproj # Filepath of the project to be packaged, relative to root of repository
+          VERSION_REGEX: <Version>(.*)<\/Version> # Regex pattern to extract version info in a capturing group
+          TAG_COMMIT: true # Flag to enable / disable git tagging
+          TAG_FORMAT: AzureDatabaseTools-v* # Format of the git tag, [*] gets replaced with version
+          NUGET_KEY: ${{secrets.NUGETREGISTRY}} # API key to authenticate with NuGet server
+          INCLUDE_SYMBOLS: true # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
