@@ -1,6 +1,7 @@
 name: publish AzureDatabaseTools to NuGet registry
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
